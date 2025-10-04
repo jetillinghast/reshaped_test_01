@@ -45,3 +45,28 @@ Phase 5: Finalization & Polish
 [x] Verify that all text is rendered using the <Text> component and follows the theme's typography.
 
 [x] Perform a final check to ensure the completed application meets all requirements outlined in docs/01_PRODUCT_REQUIREMENTS.md.
+
+Phase 6: Real-Time Data Integration (NEW)
+[x] Set up Alpha Vantage API account and obtain API key.
+
+[x] Configure Alpha Vantage MCP server in .vscode/mcp.json.
+
+[x] Test Alpha Vantage API connection and verify data retrieval (PLTR test successful).
+
+[x] Create Alpha Vantage API utility functions in src/utils/alphaVantageAPI.js.
+
+[ ] Replace mock data generation with real Alpha Vantage API calls in App.jsx.
+
+[ ] Implement proper error handling and fallback mechanisms for API failures.
+
+[ ] Add rate limiting handling to respect Alpha Vantage free tier limits (25 requests/day).
+
+[ ] Test real-time data integration with all 30 tech stocks.
+
+[ ] Update UI to show real-time data timestamps and market status.
+
+[ ] Implement data caching to optimize API usage and improve performance.
+
+[ ] Add manual refresh functionality for users to update stock data.
+
+[ ] Document Alpha Vantage integration in README.md and other documentation files.

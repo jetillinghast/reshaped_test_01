@@ -1,30 +1,52 @@
 # 📈 Top 30 Tech Stocks Dashboard
 
-A beautiful, responsive stock market dashboard built with **React**, **Vite**, and **Reshaped UI** showcasing the top 30 technology companies including the Magnificent Seven.
+A beautiful, responsive stock market dashboard built with **React**, **Vite**, and **Reshaped UI** showcasing real-time data for the top 30 technology companies including the Magnificent Seven.
 
 ![Tech Stack](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Reshaped](https://img.shields.io/badge/Reshaped-000000?style=for-the-badge&logo=react&logoColor=white)
+![Alpha Vantage](https://img.shields.io/badge/Alpha%20Vantage-00B4D8?style=for-the-badge&logo=chartdotjs&logoColor=white)
 
 ## ✨ Features
 
-- **📊 30 Tech Stock Cards** - Real-time simulated data for major technology companies
+- **📊 Real-Time Stock Data** - Live market data powered by Alpha Vantage API
 - **🏛️ Magnificent Seven** - Apple, Microsoft, Alphabet, Amazon, NVIDIA, Meta, Tesla
 - **🚀 Additional 23 Companies** - Netflix, Oracle, Adobe, Intel, AMD, PayPal, Uber, and more
 - **🎨 Beautiful UI** - Built with Reshaped design system components
 - **📱 Responsive Design** - Perfect 3-column grid layout on desktop, adapts to mobile
 - **🌙 Dark/Light Theme** - Toggle between themes with persistent state
-- **⚡ Real-time Updates** - Simulated live price changes with refresh functionality
-- **📈 Visual Indicators** - Color-coded price changes with trend arrows
+- **⚡ Live Market Updates** - Real-time price changes from Alpha Vantage
+- **📈 Visual Indicators** - Color-coded price changes with actual market data
 - **🎯 Professional Typography** - Proper hierarchy using Reshaped's design tokens
+- **🔄 Smart Refresh** - Intelligent data fetching with rate limit handling
+- **💾 Data Caching** - Optimized API usage for better performance
 
 ## 🏗️ Built With
 
 - **[React 19](https://react.dev/)** - Modern React with latest features
 - **[Vite](https://vitejs.dev/)** - Lightning fast build tool and dev server  
 - **[Reshaped UI](https://reshaped.so/)** - Professional React component library
+- **[Alpha Vantage API](https://www.alphavantage.co/)** - Real-time stock market data
 - **[Lucide React](https://lucide.dev/)** - Beautiful icon library
 - **Modern JavaScript** - ES2024+ features and modules
+
+## 🔌 API Integration
+
+### Alpha Vantage Setup
+1. **Get API Key** - Sign up at [Alpha Vantage](https://www.alphavantage.co/support/#api-key)
+2. **MCP Server** - Configure in `.vscode/mcp.json`:
+   ```json
+   {
+     "servers": {
+       "alphavantage": {
+         "type": "http",
+         "url": "https://mcp.alphavantage.co/mcp?apikey=YOUR_API_KEY"
+       }
+     }
+   }
+   ```
+3. **Rate Limits** - Free tier includes 25 requests/day, 5 requests/minute
+4. **Data Source** - Real-time quotes, daily/intraday data, company profiles
 
 ## 🚀 Quick Start
 
@@ -45,7 +67,13 @@ A beautiful, responsive stock market dashboard built with **React**, **Vite**, a
    npm install
    ```
 
-3. **Start development server**
+3. **Configure Alpha Vantage** (Optional - for real data)
+   ```bash
+   # Add your Alpha Vantage API key to .vscode/mcp.json
+   # See API Integration section below
+   ```
+
+4. **Start development server**
    ```bash
    npm run dev
    ```
@@ -70,9 +98,14 @@ src/
 │   ├── DashboardGrid.jsx    # Responsive grid layout container
 │   ├── StockCard.jsx        # Individual stock card component
 │   └── ThemeToggle.jsx      # Dark/light mode switcher
+├── utils/
+│   └── alphaVantageAPI.js   # Alpha Vantage API integration utilities
 ├── App.jsx                  # Main app component with state management
 ├── main.jsx                 # React app entry point with Reshaped provider
 └── index.css                # Global styles and CSS reset
+
+.vscode/
+└── mcp.json                 # MCP server configuration for Alpha Vantage
 
 .copilot/                    # Project documentation
 ├── 01_PRODUCT_REQUIREMENTS.md

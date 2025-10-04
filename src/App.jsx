@@ -2,320 +2,151 @@ import { useState, useEffect } from 'react';
 import { View, Text } from 'reshaped';
 import Header from './components/Header';
 import DashboardGrid from './components/DashboardGrid';
+import { fetchStockQuote } from './utils/alphaVantageAPI';
 
-// Mock data for the Top 30 Tech Stocks (including Magnificent 7)
-const generateMockData = () => [
-  // Magnificent 7
-  {
-    id: 'AAPL',
-    ticker: 'AAPL',
-    companyName: 'Apple Inc.',
-    price: 185.34 + (Math.random() - 0.5) * 10,
+// Company data for stock cards (will be combined with real market data)
+const STOCK_COMPANIES = {
+  // Magnificent 7 (Priority for real-time data)
+  'AAPL': 'Apple Inc.',
+  'MSFT': 'Microsoft Corporation', 
+  'GOOGL': 'Alphabet Inc.',
+  'AMZN': 'Amazon.com Inc.',
+  'NVDA': 'NVIDIA Corporation',
+  'META': 'Meta Platforms Inc.',
+  'TSLA': 'Tesla Inc.',
+  
+  // Additional Tech Stocks (will use mock data due to rate limits)
+  'NFLX': 'Netflix Inc.',
+  'ORCL': 'Oracle Corporation',
+  'CRM': 'Salesforce Inc.',
+  'ADBE': 'Adobe Inc.',
+  'INTC': 'Intel Corporation',
+  'AMD': 'Advanced Micro Devices',
+  'PYPL': 'PayPal Holdings Inc.',
+  'UBER': 'Uber Technologies Inc.',
+  'CRWD': 'CrowdStrike Holdings Inc.',
+  'SNOW': 'Snowflake Inc.',
+  'OKTA': 'Okta Inc.',
+  'NET': 'Cloudflare Inc.',
+  'SQ': 'Block Inc.',
+  'SPOT': 'Spotify Technology S.A.',
+  'ROKU': 'Roku Inc.',
+  'ZM': 'Zoom Video Communications',
+  'DOCU': 'DocuSign Inc.',
+  'SHOP': 'Shopify Inc.',
+  'TWLO': 'Twilio Inc.',
+  'DDOG': 'Datadog Inc.',
+  'MDB': 'MongoDB Inc.',
+  'WDAY': 'Workday Inc.',
+  'VEEV': 'Veeva Systems Inc.'
+};
+
+// Priority stocks for real-time data (Magnificent 7)
+const REAL_TIME_STOCKS = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA'];
+
+// Generate mock data for non-priority stocks to respect rate limits
+const generateMockDataForSymbol = (symbol, companyName) => {
+  const basePrices = {
+    'NFLX': 485.23, 'ORCL': 125.67, 'CRM': 234.89, 'ADBE': 567.12,
+    'INTC': 43.56, 'AMD': 145.78, 'PYPL': 67.89, 'UBER': 71.23,
+    'CRWD': 312.45, 'SNOW': 178.90, 'OKTA': 89.34, 'NET': 76.54,
+    'SQ': 87.65, 'SPOT': 234.12, 'ROKU': 54.32, 'ZM': 67.89,
+    'DOCU': 45.67, 'SHOP': 123.45, 'TWLO': 78.90, 'DDOG': 156.78,
+    'MDB': 389.12, 'WDAY': 245.67, 'VEEV': 198.43
+  };
+  
+  const basePrice = basePrices[symbol] || 100;
+  const price = basePrice + (Math.random() - 0.5) * 10;
+  const changeAmount = (Math.random() - 0.5) * 8;
+  const changePercent = (changeAmount / basePrice) * 100;
+  
+  return {
+    id: symbol,
+    symbol: symbol,
+    ticker: symbol,
+    companyName: companyName,
+    price: parseFloat(price.toFixed(2)),
     change: {
-      amount: -1.25 + (Math.random() - 0.5) * 5,
-      percent: -0.67 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'MSFT',
-    ticker: 'MSFT',
-    companyName: 'Microsoft Corporation',
-    price: 420.15 + (Math.random() - 0.5) * 15,
-    change: {
-      amount: 2.45 + (Math.random() - 0.5) * 4,
-      percent: 0.58 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'GOOGL',
-    ticker: 'GOOGL',
-    companyName: 'Alphabet Inc.',
-    price: 138.92 + (Math.random() - 0.5) * 8,
-    change: {
-      amount: -0.87 + (Math.random() - 0.5) * 3,
-      percent: -0.62 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'AMZN',
-    ticker: 'AMZN',
-    companyName: 'Amazon.com Inc.',
-    price: 145.78 + (Math.random() - 0.5) * 12,
-    change: {
-      amount: 1.89 + (Math.random() - 0.5) * 6,
-      percent: 1.31 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'NVDA',
-    ticker: 'NVDA',
-    companyName: 'NVIDIA Corporation',
-    price: 875.42 + (Math.random() - 0.5) * 25,
-    change: {
-      amount: 12.56 + (Math.random() - 0.5) * 20,
-      percent: 1.45 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'META',
-    ticker: 'META',
-    companyName: 'Meta Platforms Inc.',
-    price: 502.18 + (Math.random() - 0.5) * 18,
-    change: {
-      amount: -3.22 + (Math.random() - 0.5) * 8,
-      percent: -0.64 + (Math.random() - 0.5) * 2.5
-    }
-  },
-  {
-    id: 'TSLA',
-    ticker: 'TSLA',
-    companyName: 'Tesla Inc.',
-    price: 248.91 + (Math.random() - 0.5) * 20,
-    change: {
-      amount: 5.67 + (Math.random() - 0.5) * 15,
-      percent: 2.33 + (Math.random() - 0.5) * 5
-    }
-  },
-  // Additional Top Tech Stocks
-  {
-    id: 'NFLX',
-    ticker: 'NFLX',
-    companyName: 'Netflix Inc.',
-    price: 445.32 + (Math.random() - 0.5) * 15,
-    change: {
-      amount: 3.21 + (Math.random() - 0.5) * 8,
-      percent: 0.72 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'ORCL',
-    ticker: 'ORCL',
-    companyName: 'Oracle Corporation',
-    price: 112.45 + (Math.random() - 0.5) * 8,
-    change: {
-      amount: -1.23 + (Math.random() - 0.5) * 4,
-      percent: -1.09 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'CRM',
-    ticker: 'CRM',
-    companyName: 'Salesforce Inc.',
-    price: 267.89 + (Math.random() - 0.5) * 12,
-    change: {
-      amount: 4.56 + (Math.random() - 0.5) * 6,
-      percent: 1.73 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'ADBE',
-    ticker: 'ADBE',
-    companyName: 'Adobe Inc.',
-    price: 523.67 + (Math.random() - 0.5) * 18,
-    change: {
-      amount: -2.34 + (Math.random() - 0.5) * 7,
-      percent: -0.45 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'INTC',
-    ticker: 'INTC',
-    companyName: 'Intel Corporation',
-    price: 34.56 + (Math.random() - 0.5) * 4,
-    change: {
-      amount: 0.78 + (Math.random() - 0.5) * 2,
-      percent: 2.31 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'AMD',
-    ticker: 'AMD',
-    companyName: 'Advanced Micro Devices',
-    price: 156.78 + (Math.random() - 0.5) * 12,
-    change: {
-      amount: 3.45 + (Math.random() - 0.5) * 8,
-      percent: 2.25 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'PYPL',
-    ticker: 'PYPL',
-    companyName: 'PayPal Holdings Inc.',
-    price: 78.23 + (Math.random() - 0.5) * 6,
-    change: {
-      amount: -1.12 + (Math.random() - 0.5) * 3,
-      percent: -1.41 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'UBER',
-    ticker: 'UBER',
-    companyName: 'Uber Technologies Inc.',
-    price: 67.89 + (Math.random() - 0.5) * 5,
-    change: {
-      amount: 2.34 + (Math.random() - 0.5) * 4,
-      percent: 3.57 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'SHOP',
-    ticker: 'SHOP',
-    companyName: 'Shopify Inc.',
-    price: 89.45 + (Math.random() - 0.5) * 7,
-    change: {
-      amount: 1.67 + (Math.random() - 0.5) * 5,
-      percent: 1.90 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'SPOT',
-    ticker: 'SPOT',
-    companyName: 'Spotify Technology SA',
-    price: 234.56 + (Math.random() - 0.5) * 10,
-    change: {
-      amount: -3.21 + (Math.random() - 0.5) * 6,
-      percent: -1.35 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'ZOOM',
-    ticker: 'ZM',
-    companyName: 'Zoom Video Communications',
-    price: 78.90 + (Math.random() - 0.5) * 6,
-    change: {
-      amount: 0.89 + (Math.random() - 0.5) * 3,
-      percent: 1.14 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'SNAP',
-    ticker: 'SNAP',
-    companyName: 'Snap Inc.',
-    price: 12.34 + (Math.random() - 0.5) * 2,
-    change: {
-      amount: -0.23 + (Math.random() - 0.5) * 1,
-      percent: -1.83 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'TWTR',
-    ticker: 'X',
-    companyName: 'X Corp (formerly Twitter)',
-    price: 45.67 + (Math.random() - 0.5) * 4,
-    change: {
-      amount: 1.23 + (Math.random() - 0.5) * 3,
-      percent: 2.77 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'SQ',
-    ticker: 'SQ',
-    companyName: 'Block Inc.',
-    price: 89.12 + (Math.random() - 0.5) * 7,
-    change: {
-      amount: 2.45 + (Math.random() - 0.5) * 5,
-      percent: 2.83 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'TWLO',
-    ticker: 'TWLO',
-    companyName: 'Twilio Inc.',
-    price: 67.34 + (Math.random() - 0.5) * 5,
-    change: {
-      amount: -1.45 + (Math.random() - 0.5) * 4,
-      percent: -2.11 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'ROKU',
-    ticker: 'ROKU',
-    companyName: 'Roku Inc.',
-    price: 78.45 + (Math.random() - 0.5) * 6,
-    change: {
-      amount: 3.12 + (Math.random() - 0.5) * 5,
-      percent: 4.14 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'DOCU',
-    ticker: 'DOCU',
-    companyName: 'DocuSign Inc.',
-    price: 56.78 + (Math.random() - 0.5) * 4,
-    change: {
-      amount: 0.89 + (Math.random() - 0.5) * 3,
-      percent: 1.59 + (Math.random() - 0.5) * 2
-    }
-  },
-  {
-    id: 'PLTR',
-    ticker: 'PLTR',
-    companyName: 'Palantir Technologies',
-    price: 23.45 + (Math.random() - 0.5) * 3,
-    change: {
-      amount: 1.67 + (Math.random() - 0.5) * 2,
-      percent: 7.67 + (Math.random() - 0.5) * 5
-    }
-  },
-  {
-    id: 'SNOW',
-    ticker: 'SNOW',
-    companyName: 'Snowflake Inc.',
-    price: 178.90 + (Math.random() - 0.5) * 12,
-    change: {
-      amount: -2.34 + (Math.random() - 0.5) * 6,
-      percent: -1.29 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'CRWD',
-    ticker: 'CRWD',
-    companyName: 'CrowdStrike Holdings',
-    price: 245.67 + (Math.random() - 0.5) * 15,
-    change: {
-      amount: 4.23 + (Math.random() - 0.5) * 8,
-      percent: 1.75 + (Math.random() - 0.5) * 4
-    }
-  },
-  {
-    id: 'OKTA',
-    ticker: 'OKTA',
-    companyName: 'Okta Inc.',
-    price: 98.34 + (Math.random() - 0.5) * 7,
-    change: {
-      amount: 2.11 + (Math.random() - 0.5) * 4,
-      percent: 2.19 + (Math.random() - 0.5) * 3
-    }
-  },
-  {
-    id: 'NET',
-    ticker: 'NET',
-    companyName: 'Cloudflare Inc.',
-    price: 87.56 + (Math.random() - 0.5) * 6,
-    change: {
-      amount: 1.89 + (Math.random() - 0.5) * 5,
-      percent: 2.20 + (Math.random() - 0.5) * 4
-    }
-  }
-];
+      amount: parseFloat(changeAmount.toFixed(2)),
+      percent: parseFloat(changePercent.toFixed(2))
+    },
+    volume: Math.floor(Math.random() * 50000000) + 1000000,
+    lastUpdate: new Date().toISOString().split('T')[0],
+    isRealTime: false
+  };
+};
 
 function App() {
   const [stocks, setStocks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Simulated data fetching function
+  // Fetch real-time data for priority stocks, mock data for others
   const fetchStockData = async () => {
     setIsLoading(true);
+    setError(null);
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Generate fresh mock data with random price variations
-    const mockData = generateMockData();
-    setStocks(mockData);
-    setLastUpdated(new Date().toLocaleTimeString());
-    setIsLoading(false);
+    try {
+      const allStocks = [];
+      
+      // Fetch real-time data for Magnificent 7
+      console.log('🔄 Fetching real-time data for Magnificent 7...');
+      for (const symbol of REAL_TIME_STOCKS) {
+        try {
+          const realData = await fetchStockQuote(symbol);
+          if (realData) {
+            allStocks.push({
+              ...realData,
+              id: symbol,
+              ticker: symbol,
+              companyName: STOCK_COMPANIES[symbol],
+              isRealTime: true
+            });
+            console.log(`✅ Fetched real data for ${symbol}: $${realData.price}`);
+          } else {
+            // Fallback to mock data if API fails
+            allStocks.push(generateMockDataForSymbol(symbol, STOCK_COMPANIES[symbol]));
+            console.log(`⚠️ Using mock data for ${symbol} (API failed)`);
+          }
+          
+          // Add delay to respect rate limits (5 requests/minute = 12s intervals)
+          if (REAL_TIME_STOCKS.indexOf(symbol) < REAL_TIME_STOCKS.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1s for demo, 12s for production
+          }
+        } catch (error) {
+          console.error(`❌ Error fetching ${symbol}:`, error);
+          allStocks.push(generateMockDataForSymbol(symbol, STOCK_COMPANIES[symbol]));
+        }
+      }
+      
+      // Add mock data for remaining stocks to respect rate limits
+      console.log('📊 Adding mock data for remaining stocks...');
+      const remainingSymbols = Object.keys(STOCK_COMPANIES).filter(
+        symbol => !REAL_TIME_STOCKS.includes(symbol)
+      );
+      
+      for (const symbol of remainingSymbols) {
+        allStocks.push(generateMockDataForSymbol(symbol, STOCK_COMPANIES[symbol]));
+      }
+      
+      setStocks(allStocks);
+      setLastUpdated(new Date());
+      console.log(`✅ Successfully loaded ${allStocks.length} stocks (${REAL_TIME_STOCKS.length} real-time)`);
+      
+    } catch (error) {
+      console.error('❌ Error in fetchStockData:', error);
+      setError('Failed to load stock data. Please try again.');
+      
+      // Fallback to all mock data
+      const fallbackStocks = Object.entries(STOCK_COMPANIES).map(([symbol, companyName]) =>
+        generateMockDataForSymbol(symbol, companyName)
+      );
+      setStocks(fallbackStocks);
+      setLastUpdated(new Date());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Load initial data on component mount
