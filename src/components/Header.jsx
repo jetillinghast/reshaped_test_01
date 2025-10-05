@@ -8,7 +8,7 @@ function Header({ lastUpdated }) {
         <View direction="row" justify="space-between" align="center">
           <View>
             <Text variant="display-2" weight="bold" color="neutral">
-              Top 30 Tech Stocks
+              Top 20 Tech Stocks
             </Text>
             <Text variant="body-2" color="neutral-faded">
               Real-time technology stock market dashboard
@@ -22,7 +22,7 @@ function Header({ lastUpdated }) {
                   Last Updated
                 </Text>
                 <Text variant="body-3" color="neutral">
-                  {lastUpdated}
+                  {lastUpdated.toLocaleTimeString()}
                 </Text>
               </View>
             )}

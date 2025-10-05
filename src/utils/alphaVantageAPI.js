@@ -20,6 +20,16 @@ export const fetchStockQuote = async (symbol) => {
     }
     
     const data = await response.json();
+    
+    // Check for rate limit response
+    if (data.Note && data.Note.includes('rate limit')) {
+      throw new Error('Alpha Vantage rate limit reached: ' + data.Note);
+    }
+    
+    if (data.Information && data.Information.includes('rate limit')) {
+      throw new Error('Alpha Vantage rate limit reached: ' + data.Information);
+    }
+    
     const quote = data['Global Quote'];
     
     if (!quote) {
@@ -39,6 +49,12 @@ export const fetchStockQuote = async (symbol) => {
     };
   } catch (error) {
     console.error(`Error fetching stock data for ${symbol}:`, error);
+    
+    // Re-throw rate limit errors so they can be caught upstream
+    if (error.message && error.message.includes('rate limit')) {
+      throw error;
+    }
+    
     return null;
   }
 };
