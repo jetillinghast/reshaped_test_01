@@ -1,6 +1,6 @@
-# 📈 Top 30 Tech Stocks Dashboard
+# 📈 Top 20 Tech Stocks Dashboard
 
-A beautiful, responsive stock market dashboard built with **React**, **Vite**, and **Reshaped UI** showcasing real-time data for the top 30 technology companies including the Magnificent Seven.
+A beautiful, responsive stock market dashboard built with **React**, **Vite**, and **Reshaped UI** showcasing real-time data for 20 top technology companies with intelligent rate limit handling.
 
 ![Tech Stack](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
@@ -10,16 +10,18 @@ A beautiful, responsive stock market dashboard built with **React**, **Vite**, a
 ## ✨ Features
 
 - **📊 Real-Time Stock Data** - Live market data powered by Alpha Vantage API
-- **🏛️ Magnificent Seven** - Apple, Microsoft, Alphabet, Amazon, NVIDIA, Meta, Tesla
-- **🚀 Additional 23 Companies** - Netflix, Oracle, Adobe, Intel, AMD, PayPal, Uber, and more
+- **🏛️ Magnificent Seven Priority** - Apple, Microsoft, Alphabet with real-time data
+- **🚀 Additional 17 Companies** - Netflix, Oracle, Adobe, Intel, AMD, PayPal, Uber, and more
 - **🎨 Beautiful UI** - Built with Reshaped design system components
 - **📱 Responsive Design** - Perfect 3-column grid layout on desktop, adapts to mobile
 - **🌙 Dark/Light Theme** - Toggle between themes with persistent state
-- **⚡ Live Market Updates** - Real-time price changes from Alpha Vantage
+- **⚡ Smart Rate Limiting** - Intelligent API usage with graceful degradation
+- **🛡️ Error Handling** - User-friendly alerts when rate limits are reached
 - **📈 Visual Indicators** - Color-coded price changes with actual market data
 - **🎯 Professional Typography** - Proper hierarchy using Reshaped's design tokens
-- **🔄 Smart Refresh** - Intelligent data fetching with rate limit handling
-- **💾 Data Caching** - Optimized API usage for better performance
+- **🔄 Smart Refresh** - Manual refresh functionality with optimized API calls
+- **💾 Fallback System** - Realistic mock data when API limits exceeded
+- **� Rate Limit Alerts** - Clear messaging about API usage and data sources
 
 ## 🏗️ Built With
 
@@ -46,7 +48,8 @@ A beautiful, responsive stock market dashboard built with **React**, **Vite**, a
    }
    ```
 3. **Rate Limits** - Free tier includes 25 requests/day, 5 requests/minute
-4. **Data Source** - Real-time quotes, daily/intraday data, company profiles
+4. **Smart Usage** - App uses only 3 API calls for priority stocks (AAPL, MSFT, GOOGL)
+5. **Graceful Degradation** - Realistic mock data when rate limits are exceeded
 
 ## 🚀 Quick Start
 
@@ -118,24 +121,21 @@ src/
 
 ## 💼 Featured Companies
 
-### Magnificent Seven
+### Priority Real-Time Stocks (3)
 | Company | Ticker | Market Focus |
 |---------|--------|--------------|
 | Apple | AAPL | Consumer Electronics |
 | Microsoft | MSFT | Cloud & Software |
 | Alphabet | GOOGL | Search & AI |
-| Amazon | AMZN | E-commerce & Cloud |
-| NVIDIA | NVDA | AI & Semiconductors |
-| Meta | META | Social Media & VR |
-| Tesla | TSLA | Electric Vehicles |
 
-### Additional Tech Leaders
+### Additional Tech Leaders (Mock Data)
+**Magnificent Seven:** Amazon, NVIDIA, Meta, Tesla  
 **Streaming & Media:** Netflix, Spotify, Roku  
 **Enterprise Software:** Oracle, Salesforce, Adobe, Snowflake  
 **Semiconductors:** Intel, AMD  
 **Fintech:** PayPal, Block (Square)  
 **Cloud & Security:** CrowdStrike, Okta, Cloudflare  
-**And many more...**
+**Mobility & More:** Uber and other tech leaders
 
 ## 🎨 Design System
 
@@ -147,6 +147,19 @@ This project showcases the power of **Reshaped UI** components:
 - **Theming** - Built-in dark/light mode support
 - **Colors** - Semantic color system (positive/critical indicators)
 - **Spacing** - Consistent design tokens for margins and padding
+- **Custom Alerts** - User-friendly rate limit notifications
+- **Data Source Indicators** - Clear visual distinction between real-time and demo data
+
+## 🛡️ Rate Limit Management
+
+The application intelligently handles Alpha Vantage API rate limits:
+
+- **Smart API Usage** - Only 3 real-time API calls per load (AAPL, MSFT, GOOGL)
+- **Graceful Degradation** - Seamless fallback to realistic mock data
+- **User-Friendly Alerts** - Clear notifications when rate limits are reached
+- **Data Source Transparency** - Visual indicators showing real-time vs demo data
+- **Dismissible Warnings** - Users can acknowledge and dismiss rate limit alerts
+- **No Blank Pages** - Application always shows content, never fails completely
 
 ## 🛠️ Development
 
@@ -167,7 +180,7 @@ This project showcases the power of **Reshaped UI** components:
 
 ## 📱 Screenshots
 
-*Dashboard showing 30 tech stocks in beautiful card layout with real-time data simulation*
+*Dashboard showing 20 tech stocks with intelligent rate limit handling - 3 real-time stocks with live Alpha Vantage data and 17 realistic demo stocks with graceful fallback messaging.*
 
 ## 🤝 Contributing
 
