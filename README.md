@@ -6,6 +6,7 @@ A beautiful, responsive stock market dashboard built with **React**, **Vite**, a
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Reshaped](https://img.shields.io/badge/Reshaped-000000?style=for-the-badge&logo=react&logoColor=white)
 ![Alpha Vantage](https://img.shields.io/badge/Alpha%20Vantage-00B4D8?style=for-the-badge&logo=chartdotjs&logoColor=white)
+![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-000000?style=for-the-badge&logo=github&logoColor=white)
 
 ## ✨ Features
 
@@ -30,6 +31,7 @@ A beautiful, responsive stock market dashboard built with **React**, **Vite**, a
 - **[Reshaped UI](https://reshaped.so/)** - Professional React component library
 - **[Alpha Vantage API](https://www.alphavantage.co/)** - Real-time stock market data
 - **[Lucide React](https://lucide.dev/)** - Beautiful icon library
+- **[GitHub Copilot](https://github.com/features/copilot)** - AI-powered code assistance and project development
 - **Modern JavaScript** - ES2024+ features and modules
 
 ## 🔌 API Integration
@@ -161,6 +163,18 @@ The application intelligently handles Alpha Vantage API rate limits:
 - **Dismissible Warnings** - Users can acknowledge and dismiss rate limit alerts
 - **No Blank Pages** - Application always shows content, never fails completely
 
+## 🤖 AI-Assisted Development
+
+This project was built with **GitHub Copilot** assistance, demonstrating modern AI-powered development:
+
+- **🚀 Accelerated Development** - GitHub Copilot helped generate React components, API utilities, and complex logic
+- **📚 Best Practices** - AI suggestions incorporated modern React patterns and clean architecture principles  
+- **🔧 Problem Solving** - Copilot assisted with rate limiting, error handling, and user experience optimization
+- **📖 Documentation** - AI helped create comprehensive documentation and project organization
+- **✨ Code Quality** - Suggestions included edge case handling and professional-grade error management
+
+*This showcases how human creativity combined with AI assistance can produce production-ready applications efficiently.*
+
 ## 🛠️ Development
 
 ### Available Scripts
@@ -196,11 +210,13 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
+- **GitHub Copilot** - This entire project was built with the assistance of GitHub Copilot within VS Code, demonstrating the power of AI-assisted development
 - **Reshaped Team** - For the amazing UI component library
 - **Vite Team** - For the incredible build tool
 - **React Team** - For the fantastic framework
+- **Alpha Vantage** - For providing the stock market data API
 - **Lucide** - For the beautiful icons
 
 ---
 
-**Built with ❤️ to showcase the power of modern React and Reshaped UI**
+**Built with ❤️ and GitHub Copilot to showcase the power of modern React and Reshaped UI**
